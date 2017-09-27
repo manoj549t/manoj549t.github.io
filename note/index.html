@@ -62,6 +62,7 @@
 		listParent.appendChild(document.createTextNode("Loading..."));
 		parentNode.appendChild(listParent);
 		// Read the top level directory
+		debugger;
 		twits.client.stat(path,{readDir: true},function(error,stat,stats) {
 			if(error) {
 				return twits.showError(error);  // Something went wrong.
