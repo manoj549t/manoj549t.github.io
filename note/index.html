@@ -45,12 +45,13 @@
 
 		// Authenticate against Dropbox
 		twits.setStatusMessage("Authenticating with Dropbox...");
-		twits.client.authenticate(function(error, client) {
+		twits.client.authenticate(null, function(error, client) {
 			twits.clearStatusMessage();
 			if(error) {
 				alert(error);
 				return twits.showError(error);  // Something went wrong.
 			}
+			alert("callback");
 			twits.readFolder("/",document.getElementById("twits-files"));
 		});
 	};
