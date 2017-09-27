@@ -37,7 +37,7 @@
 		twits.client = new _dropbox.Client({
 		    key: apiKey, sandbox: false
 		});
-		debugger;
+		//debugger;
 		// Apparently not needed any more (since Dropbox.js 10.x)
 		// // Use the basic redirection authentication driver
 		// twits.client.authDriver(new Dropbox.Drivers.Redirect({useQuery: false}));
@@ -50,7 +50,7 @@
 				alert(error);
 				return twits.showError(error);  // Something went wrong.
 			}
-			alert("callback");
+			//alert("callback");
 			twits.readFolder("/",document.getElementById("twits-files"));
 		});
 	};
@@ -61,7 +61,7 @@
 		listParent.appendChild(document.createTextNode("Loading..."));
 		parentNode.appendChild(listParent);
 		// Read the top level directory
-		debugger;
+		//debugger;
 		twits.client.stat(path,{readDir: true},function(error,stat,stats) {
 			if(error) {
 				return twits.showError(error);  // Something went wrong.
