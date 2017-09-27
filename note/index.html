@@ -28,11 +28,6 @@
 
 	// Main application
 	twits.initApp = function() {
-		// Indicate whether we're running in dev
-		if(!twits.isProd) {
-			var dev = document.getElementById("twits-dev");
-			dev.appendChild(document.createTextNode("(dev)"));
-		}
 		// Initialise Dropbox for full access
 		twits.setStatusMessage("Initializing...");
 		var apiKey = twits.isProd ? twits.apiKeyProd : twits.apiKeyDev;
@@ -412,11 +407,8 @@
 </head>
 <body>
 	<div id="twits-greeting">
-		<h1>TiddlyWiki5 in Dropbox <span id="twits-dev"></span> <span class="twits-beta">beta</span> <br/></h1>
+		<h1>TiddlyWiki5 in Dropbox<br/></h1>
 		<div id="twits-files"></div>
-		<div id="twits-footer">
-			<p>This is private version</p>
-		</div>
 	</div>
 </body>
 </html>
