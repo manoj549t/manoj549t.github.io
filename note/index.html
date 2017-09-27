@@ -48,6 +48,7 @@
 		twits.client.authenticate(function(error, client) {
 			twits.clearStatusMessage();
 			if(error) {
+				alert(error);
 				return twits.showError(error);  // Something went wrong.
 			}
 			twits.readFolder("/",document.getElementById("twits-files"));
