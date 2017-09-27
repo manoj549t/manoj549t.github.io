@@ -39,9 +39,34 @@
 <body>
 	<div id="twits-greeting">
 		<h1>TiddlyWiki5 in Dropbox<br/></h1>
-		<div id="twits-files"></div>
+		<!--<div id="twits-files"></div>-->
 	</div>
 
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Woohoo, The modal works... 
+        <div id="twits-files"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
@@ -55,7 +80,6 @@
   crossorigin="anonymous"></script>-->
 
 <script>
-
 (function() {
 
 	//Make sure TW5 can't see Dropbox
@@ -409,9 +433,8 @@
 
 	// Do our stuff when the page has loaded
 	document.addEventListener("DOMContentLoaded",function(event) {
-		twits.initApp();
+		//twits.initApp();
 	},false);
 
 })();
-
 </script>
