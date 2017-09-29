@@ -1,8 +1,8 @@
 (function() {
 
 	//Make sure TW5 can't see Dropbox
-	var _dropbox = window.Dropbox;
-	delete window.Dropbox;
+	//var _dropbox = window.Dropbox;
+	//	delete window.Dropbox;
 
 	var twits = {
 		isProd: false, 
@@ -12,85 +12,56 @@
 
 	// Main application
 	twits.initApp = function() {
+
 		// Initialise Dropbox for full access
 		twits.setStatusMessage("Initializing...");
-		var apiKey = twits.isProd ? twits.apiKeyProd : twits.apiKeyDev;
-		twits.client = new _dropbox.Client({
-		    key: apiKey, sandbox: false
-		});
-		//debugger;
-		// Apparently not needed any more (since Dropbox.js 10.x)
-		// // Use the basic redirection authentication driver
-		// twits.client.authDriver(new Dropbox.Drivers.Redirect({useQuery: false}));
 
-		// Authenticate against Dropbox
 		twits.setStatusMessage("Authenticating with Dropbox...");
-		twits.client.authenticate(function(error, client) {
-			twits.clearStatusMessage();
-			if(error) {
-				alert(error);
-				return twits.showError(error);  // Something went wrong.
-			}
-			//alert("callback");
-			twits.readFolder("/",document.getElementById("twits-files"));
-		});
+		
+		var Dropbox = require('dropbox');
+
+		var dbx = new Dropbox({ accessToken: 'SVvshC4nXcwAAAAAAAAUVupfvtR8-VW3DQN91NpNCbe74i-H35rjJIX4Bmi7LiGM' });
+
+		dbx.filesListFolder({path: ''})
+		  .then(function(response) {
+		  	// Loading message
+			var listParent = document.createElement("ol");
+			listParent.appendChild(document.createTextNode("Loading..."));
+			document.getElementById("twits-files").appendChild(listParent);
+			twits.readFolder(listParent, response.entries);
+		  })
+		  .catch(function(error) {
+				if(error) {
+					return twits.showError(error);  // Something went wrong.
+			}	
+	    });
 	};
 
-	twits.readFolder = function(path,parentNode) {
-		// Loading message
-		var listParent = document.createElement("ol");
-		listParent.appendChild(document.createTextNode("Loading..."));
-		parentNode.appendChild(listParent);
-		// Read the top level directory
-		debugger;
-		twits.client.stat(path,{readDir: true},function(error,stat,stats) {
-			debugger;
-			if(error) {
-				return twits.showError(error);  // Something went wrong.
-			}
+
+
+	twits.readFolder = function(listParent, stats) {
+			//console.log(stats);
 			// Remove loading message
 			while(listParent.hasChildNodes()) {
 				listParent.removeChild(listParent.firstChild);
 			}
+
+			twits.clearStatusMessage();
+			
 			// Load entries
 			for(var t=0; t<stats.length; t++) {
 				stat = stats[t];
-				var listItem = document.createElement("li"),
-					classes = [];
-				if(stat.isFolder) {
-					classes.push("twits-folder");
-				} else {
-					classes.push("twits-file");
-					if(stat.mimeType === "text/html") {
-						classes.push("twits-file-html");
-					}
-				}
+				var listItem = document.createElement("li");	
 				var link;
-				classes.push("twits-file-entry");
-				if(stat.isFolder || (stat.isFile && stat.mimeType === "text/html")) {
-					link = document.createElement("a");
-					link.href = "#";
-					link.setAttribute("data-twits-path",stat.path);
-					link.addEventListener("click",twits.onClickFolderEntry,false);
-				} else {
-					link = document.createElement("span");
-				}
-				link.className = classes.join(" ");
-				var img = document.createElement("img");
-				img.src = "dropbox-icons/16x16/" + stat.typeIcon + ".gif";
-				img.style.width = "16px";
-				img.style.height = "16px";
-				link.appendChild(img);
+
+				link = document.createElement("a");
+				link.href = "#";
+				link.setAttribute("data-twits-path",stat.path_display);
+				link.addEventListener("click",twits.onClickFolderEntry,false);
 				link.appendChild(document.createTextNode(stat.name));
-				if(stat.isFile && stat.humanSize) {
-					var size = document.createElement("span");
-					size.appendChild(document.createTextNode(" (" + stat.humanSize + ")"));
-					link.appendChild(size);
-				}
 				listItem.appendChild(link);
 				listParent.appendChild(listItem);
 			}
-		});
 	};
 
 	twits.onClickFolderEntry = function(event) {
