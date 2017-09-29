@@ -2195,11 +2195,15 @@ module.exports = httpHeaderSafeJson;
 	//var _dropbox = window.Dropbox;
 	//	delete window.Dropbox;
 
+	var Dropbox = __webpack_require__(6);
+
 	var twits = {
 		isProd: false, 
 		apiKeyProd: "",
-		apiKeyDev: "sjg4b3ci37ods7k"	
+		apiKeyDev: "sjg4b3ci37ods7k"
 	};
+
+	twits.dbx = new Dropbox({ accessToken: 'SVvshC4nXcwAAAAAAAAUVupfvtR8-VW3DQN91NpNCbe74i-H35rjJIX4Bmi7LiGM' });
 
 	// Main application
 	twits.initApp = function() {
@@ -2209,13 +2213,11 @@ module.exports = httpHeaderSafeJson;
 
 		twits.setStatusMessage("Authenticating with Dropbox...");
 		
-		var Dropbox = __webpack_require__(6);
 
-		var dbx = new Dropbox({ accessToken: 'SVvshC4nXcwAAAAAAAAUVupfvtR8-VW3DQN91NpNCbe74i-H35rjJIX4Bmi7LiGM' });
-
-		dbx.filesListFolder({path: ''})
+		twits.dbx.filesListFolder({path: ''})
 		  .then(function(response) {
 		  	// Loading message
+		  	console.log(response);
 			var listParent = document.createElement("ol");
 			listParent.appendChild(document.createTextNode("Loading..."));
 			document.getElementById("twits-files").appendChild(listParent);
@@ -2228,8 +2230,6 @@ module.exports = httpHeaderSafeJson;
 	    });
 	};
 
-
-
 	twits.readFolder = function(listParent, stats) {
 			//console.log(stats);
 			// Remove loading message
@@ -2238,7 +2238,7 @@ module.exports = httpHeaderSafeJson;
 			}
 
 			twits.clearStatusMessage();
-			
+
 			// Load entries
 			for(var t=0; t<stats.length; t++) {
 				stat = stats[t];
@@ -2256,16 +2256,8 @@ module.exports = httpHeaderSafeJson;
 	};
 
 	twits.onClickFolderEntry = function(event) {
-		var path = this.getAttribute("data-twits-path"),
-			classes = this.className.split(" ");
-		if(classes.indexOf("twits-folder") !== -1 && classes.indexOf("twits-folder-open") === -1) {
-			classes.push("twits-folder-open");
-			twits.readFolder(path,this.parentNode);
-		}
-		if(classes.indexOf("twits-file-html") !== -1) {
-			twits.openFile(path);
-		}
-		this.className = classes.join(" ");
+		var path = this.getAttribute("data-twits-path");
+		twits.openFile(path);
 		event.preventDefault();
 		return false;
 	};
@@ -2273,27 +2265,26 @@ module.exports = httpHeaderSafeJson;
 	twits.openFile = function(path) {
 		// Read the TiddlyWiki file
 		// We can't trust Dropbox to have detected that the file is UTF8, so we load it in binary and manually decode it
-		twits.setStatusMessage("Reading HTML file...");
-		twits.trackProgress(twits.client.readFile(path,{arrayBuffer: true},function(error,data) {
-			if(error) {
+		//twits.setStatusMessage("Reading HTML file...");
+		twits.dbx.filesDownload({ path: path})
+		.then(r => {
+            console.log(r);
+            var blob = r.fileBlob;
+        	var reader = new FileReader();
+
+        	reader.onload = function() {
+        	twits.originalText = reader.result;
+            twits.loadTW5(reader.result);
+        	};
+ 
+			twits.originalPath = r.path_display;
+			reader.readAsText(blob);
+        })
+        .catch(e => {
+            if(error) {
 				return twits.showError(error);  // Something went wrong.
 			}
-			// We have to manually decode the file as UTF8, annoyingly
-			var byteData = new Uint8Array(data);
-			data = twits.manualConvertUTF8ToUnicode(byteData);
-			twits.clearStatusMessage();
-			// Check it is a valid TiddlyWiki
-			if(twits.isTiddlyWiki(data)) {
-				// Save the text and path
-				twits.originalPath = path;
-				twits.originalText = data;
-				// Fillet the content out of the TiddlyWiki
-			  	//twits.filletTiddlyWiki(data);
-				twits.loadTW5(data);
-			} else {
-				twits.showError("Not a TiddlyWiki!");
-			}
-		}));
+        });
 	}
 
 	twits.getStatusPanel = function() {
@@ -2354,7 +2345,6 @@ module.exports = httpHeaderSafeJson;
 		src.addEventListener("progress",onProgressHandler,false);
 		src.addEventListener("load",onLoadHandler,false);
 		src.addEventListener("error",onErrorHandler,false);
-
 	};
 
 	// Determine whether a string is a valid TiddlyWiki 2.x.x document
@@ -2402,16 +2392,16 @@ module.exports = httpHeaderSafeJson;
 			save: function( text, method, callback, options ){
 				twits.setStatusMessage("Saving changes...");
 				twits.setProgress("");
-				twits.trackProgress(twits.client.writeFile(twits.originalPath, text, function(error, stat) {
-					if(error) {
-						twits.showError(error);  // Something went wrong.
-						callback(error);
-						return;
-					} else {
-						twits.clearStatusMessage();
-						callback(null);
-					}
-				}),true);
+
+				twits.dbx.filesUpload({path: twits.originalPath, mode: "overwrite",contents: text})
+		        .then(function(response) {
+		          twits.clearStatusMessage();
+		          callback();
+		          console.log(response);
+		        })
+		        .catch(function(error) {
+		          console.error(error);
+		        });
 				return true;
 			}
 		});
