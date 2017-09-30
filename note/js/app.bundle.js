@@ -2217,9 +2217,9 @@ module.exports = httpHeaderSafeJson;
 		debugger;
 
 		if (this.isAuthenticated()) {
-			var dbx = new Dropbox({ accessToken: this.getAccessTokenFromUrl() });
+			twits.dbx = new Dropbox({ accessToken: this.getAccessTokenFromUrl() });
 		} else {
-			var dbx = new Dropbox({ clientId: twits.apiKeyDev });
+			twits.dbx = new Dropbox({ clientId: twits.apiKeyDev });
 			window.location.replace(dbx.getAuthenticationUrl(twits.redirectUri));
 		}
 
