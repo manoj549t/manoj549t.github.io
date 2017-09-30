@@ -82,7 +82,7 @@ if (isAuthenticated()) {
 	});
 } else {
 	var dbx = new Dropbox({ clientId: CLIENT_ID });
-	dbx.getAuthenticationUrl('');
+	dbx.getAuthenticationUrl('https://manoj549t.github.io/note/dbxtest.html');
 }
  
 
