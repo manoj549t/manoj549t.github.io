@@ -75,7 +75,7 @@ if (isAuthenticated()) {
 	var dbx = new Dropbox({ accessToken: getAccessTokenFromUrl() });
 	dbx.filesListFolder({path: ''})
 	.then(function(response) {
-	renderItems(response.entries);
+	console.log(response.entries);
 	})
 	.catch(function(error) {
 	console.error(error);

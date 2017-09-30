@@ -2,22 +2,34 @@
 
 	var Dropbox = require('dropbox');
 
-	/*var twits = {
-		isProd: false, 
-		apiKeyProd: "",
-		apiKeyDev: "sjg4b3ci37ods7k"
-	};*/
+	var twits = {
+		redirectUri: "https://manoj549t.github.io/note"
+		apiKeyDev: "qek5i8hcngzihxm"
+	};
 
-	twits.dbx = new Dropbox({ accessToken: 'SVvshC4nXcwAAAAAAAAUVupfvtR8-VW3DQN91NpNCbe74i-H35rjJIX4Bmi7LiGM' });
+	// Parses the url and gets the access token if it is in the urls hash
+	twits.getAccessTokenFromUrl = function() {
+		return utils.parseQueryString(window.location.hash).access_token;
+	}
+
+	// contain the access token.
+	twits.isAuthenticated = function() {
+		return !!this.getAccessTokenFromUrl();
+	}
 
 	// Main application
 	twits.initApp = function() {
 
-		// Initialise Dropbox for full access
-		twits.setStatusMessage("Initializing...");
-
 		twits.setStatusMessage("Authenticating with Dropbox...");
-		
+
+		// Initialise Dropbox for full access
+		debugger;
+		if (this.isAuthenticated()) {
+			var dbx = new Dropbox({ accessToken: this.getAccessTokenFromUrl() });
+		} else {
+			var dbx = new Dropbox({ clientId: twits.apiKeyDev });
+			window.location.replace(dbx.getAuthenticationUrl(twits.redirectUri);
+		}
 
 		twits.dbx.filesListFolder({path: ''})
 		  .then(function(response) {
@@ -28,7 +40,7 @@
 			listParent.classList.add("list-group");
 			document.getElementById("twits-files").appendChild(listParent);
 			var navParent = document.getElementById("mySidenav");
-			twits.readFolder(listParent, navParent, response.entries);
+			//twits.readFolder(listParent, navParent, response.entries);
 		  })
 		  .catch(function(error) {
 				if(error) {
