@@ -3,7 +3,7 @@
 	var Dropbox = require('dropbox');
 
 	var twits = {
-		redirectUri: "https://manoj549t.github.io/note"
+		redirectUri: "https://manoj549t.github.io/note",
 		apiKeyDev: "qek5i8hcngzihxm"
 	};
 
@@ -24,11 +24,12 @@
 
 		// Initialise Dropbox for full access
 		debugger;
+
 		if (this.isAuthenticated()) {
 			var dbx = new Dropbox({ accessToken: this.getAccessTokenFromUrl() });
 		} else {
 			var dbx = new Dropbox({ clientId: twits.apiKeyDev });
-			window.location.replace(dbx.getAuthenticationUrl(twits.redirectUri);
+			window.location.replace(dbx.getAuthenticationUrl(twits.redirectUri));
 		}
 
 		twits.dbx.filesListFolder({path: ''})
