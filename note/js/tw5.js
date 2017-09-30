@@ -1,16 +1,12 @@
 (function() {
 
-	//Make sure TW5 can't see Dropbox
-	//var _dropbox = window.Dropbox;
-	//	delete window.Dropbox;
-
 	var Dropbox = require('dropbox');
 
-	var twits = {
+	/*var twits = {
 		isProd: false, 
 		apiKeyProd: "",
 		apiKeyDev: "sjg4b3ci37ods7k"
-	};
+	};*/
 
 	twits.dbx = new Dropbox({ accessToken: 'SVvshC4nXcwAAAAAAAAUVupfvtR8-VW3DQN91NpNCbe74i-H35rjJIX4Bmi7LiGM' });
 
@@ -27,10 +23,12 @@
 		  .then(function(response) {
 		  	// Loading message
 		  	console.log(response);
-			var listParent = document.createElement("ol");
+			var listParent = document.createElement("ul");
 			listParent.appendChild(document.createTextNode("Loading..."));
+			listParent.classList.add("list-group");
 			document.getElementById("twits-files").appendChild(listParent);
-			twits.readFolder(listParent, response.entries);
+			var navParent = document.getElementById("mySidenav");
+			twits.readFolder(listParent, navParent, response.entries);
 		  })
 		  .catch(function(error) {
 				if(error) {
@@ -39,7 +37,7 @@
 	    });
 	};
 
-	twits.readFolder = function(listParent, stats) {
+	twits.readFolder = function(listParent,navParent, stats) {
 			//console.log(stats);
 			// Remove loading message
 			while(listParent.hasChildNodes()) {
@@ -47,7 +45,6 @@
 			}
 
 			twits.clearStatusMessage();
-
 			// Load entries
 			for(var t=0; t<stats.length; t++) {
 				stat = stats[t];
@@ -57,11 +54,19 @@
 				link = document.createElement("a");
 				link.href = "#";
 				link.setAttribute("data-twits-path",stat.path_display);
-				link.addEventListener("click",twits.onClickFolderEntry,false);
 				link.appendChild(document.createTextNode(stat.name));
 				listItem.appendChild(link);
+				listItem.classList.add("list-group-item");
+				listItem.classList.add("list-group-item-action");
+				listItem.addEventListener("click", twits.onClickFolderEntry, false)
+				listItem.setAttribute("data-twits-path",stat.path_display);
+
 				listParent.appendChild(listItem);
+				var linkSideNav = link.cloneNode(true);
+				linkSideNav.addEventListener("click", twits.onClickFolderEntry, false)
+				navParent.appendChild(linkSideNav);
 			}
+
 	};
 
 	twits.onClickFolderEntry = function(event) {
@@ -135,7 +140,6 @@
 		status.progress.appendChild(document.createTextNode(text));
 	};
 
-	// Display an error
 	twits.showError = function(error) {
 		twits.setStatusMessage("Error: " + error);
 		twits.setProgress("");
@@ -156,9 +160,8 @@
 		src.addEventListener("error",onErrorHandler,false);
 	};
 
-	// Determine whether a string is a valid TiddlyWiki 2.x.x document
 	twits.isTiddlyWiki = function(text) {
-		return true; //text.indexOf(twits.indexTWC) === 0 || text.indexOf(twits.indexTW5) > -1;
+		return true; 
 	};
 
 	twits.loadTW5 = function(data){
@@ -168,51 +171,40 @@
 		
 		var doc = document.createElement('html');
 		doc.innerHTML = data;
-		
-		this.test = doc;
-		
-		while( doc.children[0].childNodes.length > 0 ) {
-			//console.log(doc.children[0].childNodes[0]); 
-			try{ 
-				$(document.head).append(doc.children[0].childNodes[0]);
-			} catch (e) {
-				console.log(e); 
-			} 
-		} 
-		document.body.className = doc.children[1].className;
-		$(document.body).html(doc.children[1].innerHTML);
-		//while( doc.children[1].childNodes.length > 0 ) {
-			//console.log(doc.children[1].childNodes[0]); 
-			//try{ 
-			//	document.body.appendChild(doc.children[1].childNodes[0]);
-			//} catch (e) {
-			//	console.log(e); 
-			//} 
-		//}
-		
-		//var tags = document.getElementsByTagName('script');
-		
-		$tw.saverHandler.savers.push({
-			info: {
-				name: "tw5-in-the-sky",
-				priority: 5000,
-				capabilities: ["save"]
-			},
-			save: function( text, method, callback, options ){
-				twits.setStatusMessage("Saving changes...");
-				twits.setProgress("");
 
-				twits.dbx.filesUpload({path: twits.originalPath, mode: "overwrite",contents: text})
-		        .then(function(response) {
-		          twits.clearStatusMessage();
-		          callback();
-		          console.log(response);
-		        })
-		        .catch(function(error) {
-		          console.error(error);
-		        });
-				return true;
-			}
+		var iFrame = $("#twits-Frame");
+
+		if(iFrame)
+			iFrame.remove();
+		
+		$('<iframe id="twits-Frame"/>').appendTo("#main").contents().find('html').append(data);
+		$("#twits-Frame").height("100%");
+		$("#twits-Frame").width("100%");
+		
+		$("#twits-Frame").ready(function(){
+ 			
+ 			$("#twits-Frame")[0].contentWindow.$tw.saverHandler.savers.push({
+				info: {
+					name: "tw5-in-the-sky",
+					priority: 5000,
+					capabilities: ["save"]
+				},
+				save: function( text, method, callback, options ){
+					twits.setStatusMessage("Saving changes...");
+					twits.setProgress("");
+
+					twits.dbx.filesUpload({path: twits.originalPath, mode: "overwrite",contents: text})
+			        .then(function(response) {
+			          twits.clearStatusMessage();
+			          callback();
+			          console.log(response);
+			        })
+			        .catch(function(error) {
+			          console.error(error);
+			        });
+					return true;
+				}
+			});
 		});
 	};
 
