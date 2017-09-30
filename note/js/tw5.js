@@ -30,6 +30,7 @@
 		} else {
 			twits.dbx = new Dropbox({ clientId: twits.apiKeyDev });
 			window.location.replace(dbx.getAuthenticationUrl(twits.redirectUri));
+			return;
 		}
 
 		twits.dbx.filesListFolder({path: ''})
