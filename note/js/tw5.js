@@ -42,6 +42,7 @@
 			document.getElementById("twits-files").appendChild(listParent);
 			var navParent = document.getElementById("mySidenav");
 			//twits.readFolder(listParent, navParent, response.entries);
+			//$("#twitsModal").modal();
 		  })
 		  .catch(function(error) {
 				if(error) {
