@@ -2217,10 +2217,10 @@ module.exports = httpHeaderSafeJson;
 		debugger;
 
 		if (this.isAuthenticated()) {
-			twits.dbx = new Dropbox({ accessToken: this.getAccessTokenFromUrl() });
+			this.dbx = new Dropbox({ accessToken: this.getAccessTokenFromUrl() });
 		} else {
-			twits.dbx = new Dropbox({ clientId: twits.apiKeyDev });
-			window.location.replace(dbx.getAuthenticationUrl(twits.redirectUri));
+			this.dbx = new Dropbox({ clientId: this.apiKeyDev });
+			window.location.replace(this.dbx.getAuthenticationUrl(this.redirectUri));
 			return;
 		}
 
