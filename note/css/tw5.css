@@ -67,3 +67,17 @@ body {
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
 }
+
+button > i {
+    float: right;
+    padding: 0px;
+}
+
+i{
+    float: right;
+    padding-right: 10px;
+}
+
+.modal-body {
+    padding: 0px;
+}

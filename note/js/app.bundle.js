@@ -2192,11 +2192,28 @@ module.exports = httpHeaderSafeJson;
 (function() {
 
 	var Dropbox = __webpack_require__(6);
-
+	/**
+	Return isAuthenticated - > this.getAccessTokenFromUrl
+	Updated new Dropbox ({ accessToken: ""})
+	Remove access token from twits
+	*/
 	var twits = {
 		redirectUri: "https://manoj549t.github.io/note",
-		apiKeyDev: "qek5i8hcngzihxm"
+		apiKeyDev: "qek5i8hcngzihxm",
 	};
+
+	twits.parentPath = [];
+
+	twits.folderIcon = document.createElement("i");
+	twits.folderIcon.classList.add("material-icons");
+	twits.folderIcon.style.color = "#3d9ae8";
+	twits.folderIcon.appendChild(document.createTextNode("folder"));
+
+	twits.fileIcon = document.createElement("i");
+	twits.fileIcon.classList.add("material-icons");
+	twits.fileIcon.style.color = "dimgrey";
+	twits.fileIcon.appendChild(document.createTextNode("insert_drive_file"));
+
 
 	// Parses the url and gets the access token if it is in the urls hash
 	twits.getAccessTokenFromUrl = function() {
@@ -2214,7 +2231,7 @@ module.exports = httpHeaderSafeJson;
 		twits.setStatusMessage("Authenticating with Dropbox...");
 
 		// Initialise Dropbox for full access
-		debugger;
+
 
 		if (this.isAuthenticated()) {
 			this.dbx = new Dropbox({ accessToken: this.getAccessTokenFromUrl() });
@@ -2224,17 +2241,20 @@ module.exports = httpHeaderSafeJson;
 			return;
 		}
 
+		document.getElementById("folderUp").addEventListener("click", twits.openNewFolder.bind(this, null, true), false);
+
 		twits.dbx.filesListFolder({path: ''})
 		  .then(function(response) {
 		  	// Loading message
-		  	console.log(response);
-			var listParent = document.createElement("ul");
-			listParent.appendChild(document.createTextNode("Loading..."));
-			listParent.classList.add("list-group");
-			document.getElementById("twits-files").appendChild(listParent);
+		  	twits.clearStatusMessage();
+		  	$("#twitsModal").modal();
+
+			var listParent = document.getElementById("twits-files");
 			var navParent = document.getElementById("mySidenav");
-			//twits.readFolder(listParent, navParent, response.entries);
-			//$("#twitsModal").modal();
+
+			listParent.appendChild(document.createTextNode("Loading..."));
+			twits.readFolder(listParent, response.entries);
+			
 		  })
 		  .catch(function(error) {
 				if(error) {
@@ -2243,43 +2263,91 @@ module.exports = httpHeaderSafeJson;
 	    });
 	};
 
-	twits.readFolder = function(listParent,navParent, stats) {
-			//console.log(stats);
-			// Remove loading message
-			while(listParent.hasChildNodes()) {
-				listParent.removeChild(listParent.firstChild);
-			}
+	twits.readFolder = function(listParent, directory) {	
+		var fileCount = 0;
+		while(listParent.hasChildNodes()) {
+			listParent.removeChild(listParent.firstChild);
+		}
 
-			twits.clearStatusMessage();
-			// Load entries
-			for(var t=0; t<stats.length; t++) {
-				stat = stats[t];
-				var listItem = document.createElement("li");	
-				var link;
+		directory.forEach(function(item, index){
 
-				link = document.createElement("a");
-				link.href = "#";
-				link.setAttribute("data-twits-path",stat.path_display);
-				link.appendChild(document.createTextNode(stat.name));
-				listItem.appendChild(link);
+			if(item.name.indexOf("html") != -1 || item[".tag"] == "folder") {
+				fileCount++;
+
+				var listItem = document.createElement("a");
+				listItem.href = "#";
+				var listName = document.createTextNode(item.name);
+
+				listItem.appendChild(listName);
+				listItem.setAttribute("data-twits-path",item.path_display);
 				listItem.classList.add("list-group-item");
 				listItem.classList.add("list-group-item-action");
-				listItem.addEventListener("click", twits.onClickFolderEntry, false)
-				listItem.setAttribute("data-twits-path",stat.path_display);
 
-				listParent.appendChild(listItem);
-				var linkSideNav = link.cloneNode(true);
-				linkSideNav.addEventListener("click", twits.onClickFolderEntry, false)
-				navParent.appendChild(linkSideNav);
+				if(item[".tag"] == "folder") {
+					listItem.appendChild(twits.folderIcon.cloneNode(true));
+					listItem.addEventListener("click", twits.onClickFolderEntry.bind(this, item[".tag"], item.path_display, item.name), false);
+				} else {
+					listItem.appendChild(twits.fileIcon.cloneNode(true));
+					listItem.addEventListener("click", twits.onClickFolderEntry.bind(this, item[".tag"], item.path_display, item.name), false);	
+				}
+
+				listParent.append(listItem);
 			}
+		});
 
+		if(fileCount == 0) {
+			var listItem = document.createElement("a");
+			var listName = document.createTextNode("No tw5 files in this folder");
+			listItem.appendChild(listName);
+			listItem.classList.add("list-group-item");
+			listItem.classList.add("list-group-item-action");
+			listItem.classList.add("font-italic");
+			listItem.classList.add("text-secondary");
+
+			listParent.append(listItem);
+		}
+
+		if(twits.parentPath.length <= 0) {
+			document.getElementById("folderUp").classList.remove("visible");
+			document.getElementById("folderUp").classList.add("invisible");
+		}
 	};
 
-	twits.onClickFolderEntry = function(event) {
-		var path = this.getAttribute("data-twits-path");
-		twits.openFile(path);
-		event.preventDefault();
-		return false;
+	twits.onClickFolderEntry = function(tag, path, name) {
+
+		if(tag == "folder") {
+			twits.parentPath.push( path.substring(0, path.indexOf("/" + name)));
+			twits.openNewFolder(path, false);
+			document.getElementById("folderUp").classList.remove("invisible");
+			document.getElementById("folderUp").classList.add("visible");
+		} else { 
+			twits.openFile(path);
+			$("#twitsModal").modal('hide');
+			closeNav();
+		}
+	};
+
+	twits.openNewFolder = function(path, backBtn) {
+
+		if(backBtn) {
+			path = twits.parentPath.pop();
+			if(path == "") {
+				document.getElementById("folderUp").classList.remove("visible");
+				document.getElementById("folderUp").classList.add("invisible");
+			}
+		}
+
+		twits.dbx.filesListFolder({path: path})
+		  .then(function(response) {
+		  	// Loading message
+			var listParent = document.getElementById("twits-files");
+			twits.readFolder(listParent, response.entries);
+		  })
+		  .catch(function(error) {
+				if(error) {
+					return twits.showError(error);  // Something went wrong.
+			}	
+	    });
 	};
 
 	twits.openFile = function(path) {
@@ -2288,12 +2356,11 @@ module.exports = httpHeaderSafeJson;
 		//twits.setStatusMessage("Reading HTML file...");
 		twits.dbx.filesDownload({ path: path})
 		.then(r => {
-            console.log(r);
             var blob = r.fileBlob;
         	var reader = new FileReader();
 
         	reader.onload = function() {
-        	twits.originalText = reader.result;
+        	twits.originalText = reader.result;	
             twits.loadTW5(reader.result);
         	};
  
@@ -2305,7 +2372,7 @@ module.exports = httpHeaderSafeJson;
 				return twits.showError(error);  // Something went wrong.
 			}
         });
-	}
+	};
 
 	twits.getStatusPanel = function() {
 		var getElement = function(id,parentNode) {

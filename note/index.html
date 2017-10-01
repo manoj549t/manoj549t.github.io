@@ -2,7 +2,12 @@
 <html>
 <head>
 <title>TW5 - Dropbox</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="css/tw5.css">
 </head>
 
@@ -10,35 +15,35 @@
 
 <!--<div id="twits-greeting"></div>-->	
 
-<nav class="navbar navbar-inverse navbar-dark bg-dark">
-	<div class="container-fluid">
-		<form class="form-inline">
-		  <button class="btn btn-md align-middle btn-outline-light" type="button"  onclick="openNav()">TW5</button>
-		  <!--<a class="navbar navbar-brand navbar-left" href="#"> <span style="font-size: 20px !important">Tiddly-Wiki in the Sky</span> </a>-->
-		 </form>
-	 </div>
-</nav>
+	<nav class="navbar navbar-inverse navbar-dark bg-dark">
+		<div class="container-fluid">
+			<form class="form-inline">
+			  <button class="btn btn-md align-middle btn-outline-light" type="button"  onclick="openNav()">TW5</button>
+			  <!--<a class="navbar navbar-brand navbar-left" href="#"> <span style="font-size: 20px !important">Tiddly-Wiki in the Sky</span> </a>-->
+			 </form>
+		 </div>
+	</nav>
 
-<div id="mySidenav" class="sidenav">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-</div>
+	<div id="mySidenav" class="sidenav">
+		<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+	</div>
 
 
-<div id="main" style="height: 100vh; width: 100%;background: transparent;">
-
-</div>
+	<div id="main" style="height: 100vh; width: 100%;background: transparent;"></div>
 
 	<div class="modal fade" id="twitsModal" tabindex="-1" role="dsialog" aria-labelledby="twitsModalLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
-	      <div class="modal-header">
+	      <div class="modal-header bg-info">
 	        <h5 class="modal-title" id="twitsModalLabel">Tiddly-Wiki Files</h5>
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-	          <span aria-hidden="true">&times;</span>
-	        </button>
+		        <button type="button" class="btn btn-sm btn btn-outline-light invisible" id="folderUp">
+		          <i class="material-icons">arrow_back</i>
+		        </button>
 	      </div>
 	      <div class="modal-body" id="twitsModalBody">
-	        	<div id="twits-files"></div>
+	        	<div>
+	        		<ul class="list-group" id="twits-files"></ul>
+	        	</div>
 	      </div>
 	    </div>
 	  </div>
@@ -50,15 +55,11 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropbox.js/2.5.10/dropbox-sdk.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/dropbox.js/2.5.10/dropbox-sdk.js"></script>-->
 <script src="js/utils.js" type="text/javascript"></script>
 <script src="js/app.bundle.js" type="text/javascript"></script>
 	
 <script type="text/javascript">
-
-	$("#twitsModalBody").click(function() {
-		$("#twitsModal").modal('hide');
-	});
 
 	function openNav() {
 	    document.getElementById("mySidenav").style.width = "250px";
