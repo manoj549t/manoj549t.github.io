@@ -2200,8 +2200,8 @@ module.exports = httpHeaderSafeJson;
 	var twits = {
 		redirectUri: "https://manoj549t.github.io/note",
 		apiKeyDev: "qek5i8hcngzihxm",
-		access_token: "SVvshC4nXcwAAAAAAAAUXE3acYwSqkZLTUY7kQhg2IbrznWKMyamTTXW_A0_tCeO",
-		bLocal: true
+		access_token: "",
+		bLocal: false
 	};
 
 	twits.parentPath = []; //stack to save the parent directory. It is used for back-tracking (back button).
@@ -2420,9 +2420,7 @@ module.exports = httpHeaderSafeJson;
 	};
 
 	twits.openFile = function(path) {
-		// Read the TiddlyWiki file
-		// We can't trust Dropbox to have detected that the file is UTF8, so we load it in binary and manually decode it
-		//twits.setStatusMessage("Reading HTML file...");
+
 		twits.showProgress();
 		
 		twits.dbx.filesDownload({ path: path})
@@ -2478,13 +2476,13 @@ module.exports = httpHeaderSafeJson;
 		status.message.appendChild(document.createTextNode(text));
 	};
 
-	/*twits.setProgress = function(text) {
+	twits.setProgress = function(text) {
 		var status = twits.getStatusPanel();
 		while(status.progress.hasChildNodes()) {
 			status.progress.removeChild(status.progress.firstChild);
 		}
 		status.progress.appendChild(document.createTextNode(text));
-	};*/
+	};
 
 	twits.showError = function(error) {
 		twits.setStatusMessage("Error: " + error);
@@ -4421,7 +4419,7 @@ downloadRequest = function (path, args, auth, host, accessToken, selectUser) {
     } else {
       apiRequest.on('progress', function(event){
         var progressWidth = Math.round(event.percent) + "%";
-        console.log("progress called - " + progressWidth);
+        //console.log("progress called - " + progressWidth);
         $("#downloadProgress").width(progressWidth);
       });
       apiRequest.end(responseHandler);

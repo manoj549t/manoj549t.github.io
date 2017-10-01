@@ -285,13 +285,13 @@
 		status.message.appendChild(document.createTextNode(text));
 	};
 
-	/*twits.setProgress = function(text) {
+	twits.setProgress = function(text) {
 		var status = twits.getStatusPanel();
 		while(status.progress.hasChildNodes()) {
 			status.progress.removeChild(status.progress.firstChild);
 		}
 		status.progress.appendChild(document.createTextNode(text));
-	};*/
+	};
 
 	twits.showError = function(error) {
 		twits.setStatusMessage("Error: " + error);
