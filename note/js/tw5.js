@@ -9,9 +9,15 @@
 	var twits = {
 		redirectUri: "https://manoj549t.github.io/note",
 		apiKeyDev: "qek5i8hcngzihxm",
+		access_token: "SVvshC4nXcwAAAAAAAAUXE3acYwSqkZLTUY7kQhg2IbrznWKMyamTTXW_A0_tCeO"
 	};
 
-	twits.parentPath = [];
+	twits.parentPath = []; //stack to save the parent directory. It is used for back-tracking (back button).
+
+	$('#twitsModal').on('hidden.bs.modal', function (e) {
+		twits.bModalVisible = false;
+  		twits.parentPath = [];	//when the modal is closed. Reset the parentPath.
+	})
 
 	twits.folderIcon = document.createElement("i");
 	twits.folderIcon.classList.add("material-icons");
@@ -31,19 +37,18 @@
 
 	// contain the access token.
 	twits.isAuthenticated = function() {
-		return !!this.getAccessTokenFromUrl();
+		return true;
+		//return !!this.getAccessTokenFromUrl();
 	}
 
 	// Main application
 	twits.initApp = function() {
 
-		twits.setStatusMessage("Authenticating with Dropbox...");
+		twits.setStatusMessage("Authenticating");
 
 		// Initialise Dropbox for full access
-
-
 		if (this.isAuthenticated()) {
-			this.dbx = new Dropbox({ accessToken: this.getAccessTokenFromUrl() });
+			this.dbx = new Dropbox({ accessToken: this.access_token});
 		} else {
 			this.dbx = new Dropbox({ clientId: this.apiKeyDev });
 			window.location.replace(this.dbx.getAuthenticationUrl(this.redirectUri));
@@ -51,18 +56,23 @@
 		}
 
 		document.getElementById("folderUp").addEventListener("click", twits.openNewFolder.bind(this, null, true), false);
+		
+		$("#navBack").on("click", function(){
+			closeNav();
+		});
 
 		twits.dbx.filesListFolder({path: ''})
 		  .then(function(response) {
 		  	// Loading message
 		  	twits.clearStatusMessage();
 		  	$("#twitsModal").modal();
-
+		  	twits.bModalVisible = true;
+		  	
 			var listParent = document.getElementById("twits-files");
-			var navParent = document.getElementById("mySidenav");
+			var navParent = document.getElementById("twits-sidenav");
 
 			listParent.appendChild(document.createTextNode("Loading..."));
-			twits.readFolder(listParent, response.entries);
+			twits.readFolder(listParent, navParent, response.entries, true);
 			
 		  })
 		  .catch(function(error) {
@@ -72,14 +82,26 @@
 	    });
 	};
 
-	twits.readFolder = function(listParent, directory) {	
+	twits.readFolder = function(modalParent, navParent, directory, bOnload) {	
 		var fileCount = 0;
+
+		if(modalParent != null) {
+			var listParent = modalParent;
+			var bmodal = true;
+		} else if (navParent != null) {
+			var listParent = navParent;
+			var bNav = true;
+		} else {
+			return twits.showError("Read Folder Error: Unable to find the list parent.")
+		}
+
 		while(listParent.hasChildNodes()) {
 			listParent.removeChild(listParent.firstChild);
 		}
 
 		directory.forEach(function(item, index){
 
+			// if its not a html file or a folder - Do not display.
 			if(item.name.indexOf("html") != -1 || item[".tag"] == "folder") {
 				fileCount++;
 
@@ -89,15 +111,28 @@
 
 				listItem.appendChild(listName);
 				listItem.setAttribute("data-twits-path",item.path_display);
-				listItem.classList.add("list-group-item");
-				listItem.classList.add("list-group-item-action");
 
-				if(item[".tag"] == "folder") {
-					listItem.appendChild(twits.folderIcon.cloneNode(true));
+				if(bOnload) {
+					var navItem = listItem.cloneNode(listItem); // Copy node to navigation bar only onload (first time)!
+					navParent.append(navItem);
+					navItem.addEventListener("click", twits.onClickFolderEntry.bind(this, item[".tag"], item.path_display, item.name), false);
+				}
+
+				if(bmodal) {
+					listItem.classList.add("list-group-item");
+					listItem.classList.add("list-group-item-action");
+
+					if(item[".tag"] == "folder") {
+						listItem.appendChild(twits.folderIcon.cloneNode(true));
+						listItem.addEventListener("click", twits.onClickFolderEntry.bind(this, item[".tag"], item.path_display, item.name), false);
+					} else {
+						listItem.appendChild(twits.fileIcon.cloneNode(true));
+						listItem.addEventListener("click", twits.onClickFolderEntry.bind(this, item[".tag"], item.path_display, item.name), false);	
+					}
+				}
+
+				if(bNav){
 					listItem.addEventListener("click", twits.onClickFolderEntry.bind(this, item[".tag"], item.path_display, item.name), false);
-				} else {
-					listItem.appendChild(twits.fileIcon.cloneNode(true));
-					listItem.addEventListener("click", twits.onClickFolderEntry.bind(this, item[".tag"], item.path_display, item.name), false);	
 				}
 
 				listParent.append(listItem);
@@ -108,17 +143,29 @@
 			var listItem = document.createElement("a");
 			var listName = document.createTextNode("No tw5 files in this folder");
 			listItem.appendChild(listName);
-			listItem.classList.add("list-group-item");
-			listItem.classList.add("list-group-item-action");
+
+			if (bmodal) {
+				listItem.classList.add("list-group-item");
+				listItem.classList.add("list-group-item-action");
+			}
+
 			listItem.classList.add("font-italic");
 			listItem.classList.add("text-secondary");
 
 			listParent.append(listItem);
 		}
 
-		if(twits.parentPath.length <= 0) {
-			document.getElementById("folderUp").classList.remove("visible");
-			document.getElementById("folderUp").classList.add("invisible");
+		if(twits.parentPath.length <= 0 && twits.bModalVisible) {
+			if (twits.bModalVisible) {
+				document.getElementById("folderUp").classList.remove("visible");
+				document.getElementById("folderUp").classList.add("invisible");
+			} else {
+				$("#navBack").off("click");
+				$("#navBack").on("click", function(){
+					closeNav();
+				});
+			}
+			
 		}
 	};
 
@@ -127,8 +174,15 @@
 		if(tag == "folder") {
 			twits.parentPath.push( path.substring(0, path.indexOf("/" + name)));
 			twits.openNewFolder(path, false);
-			document.getElementById("folderUp").classList.remove("invisible");
-			document.getElementById("folderUp").classList.add("visible");
+			if (twits.bModalVisible) {
+				document.getElementById("folderUp").classList.remove("invisible");
+				document.getElementById("folderUp").classList.add("visible");
+			} else {
+				$("#navBack").off("click");
+				$("#navBack").on("click", function(){
+					twits.openNewFolder(null, true);
+				});
+			}
 		} else { 
 			twits.openFile(path);
 			$("#twitsModal").modal('hide');
@@ -140,7 +194,7 @@
 
 		if(backBtn) {
 			path = twits.parentPath.pop();
-			if(path == "") {
+			if(path == "" && twits.bModalVisible) {
 				document.getElementById("folderUp").classList.remove("visible");
 				document.getElementById("folderUp").classList.add("invisible");
 			}
@@ -149,8 +203,13 @@
 		twits.dbx.filesListFolder({path: path})
 		  .then(function(response) {
 		  	// Loading message
-			var listParent = document.getElementById("twits-files");
-			twits.readFolder(listParent, response.entries);
+			if(twits.bModalVisible) {
+				var modalParent = document.getElementById("twits-files");
+			} else {
+				var navParent = document.getElementById("twits-sidenav");
+			}
+
+			twits.readFolder(modalParent, navParent, response.entries), false;
 		  })
 		  .catch(function(error) {
 				if(error) {
