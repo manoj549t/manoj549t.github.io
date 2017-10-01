@@ -8,7 +8,8 @@
 	*/
 	var twits = {
 		redirectUri: "https://manoj549t.github.io/note",
-		apiKeyDev: "qek5i8hcngzihxm"
+		apiKeyDev: "qek5i8hcngzihxm",
+		access_token: ""
 	};
 
 	twits.parentPath = []; //stack to save the parent directory. It is used for back-tracking (back button).
@@ -47,7 +48,7 @@
 
 		// Initialise Dropbox for full access
 		if (this.isAuthenticated()) {
-			this.dbx = new Dropbox({ accessToken: this.getAccessTokenFromUrl());
+			this.dbx = new Dropbox({ accessToken: this.getAccessTokenFromUrl()});
 		} else {
 			this.dbx = new Dropbox({ clientId: this.apiKeyDev });
 			window.location.replace(this.dbx.getAuthenticationUrl(this.redirectUri));
