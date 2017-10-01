@@ -9,7 +9,8 @@
 	var twits = {
 		redirectUri: "https://manoj549t.github.io/note",
 		apiKeyDev: "qek5i8hcngzihxm",
-		access_token: ""
+		access_token: "",
+		bLocal: false
 	};
 
 	twits.parentPath = []; //stack to save the parent directory. It is used for back-tracking (back button).
@@ -32,13 +33,18 @@
 
 	// Parses the url and gets the access token if it is in the urls hash
 	twits.getAccessTokenFromUrl = function() {
-		return utils.parseQueryString(window.location.hash).access_token;
+		if(this.bLocal)
+			return this.access_token;
+		else
+			return utils.parseQueryString(window.location.hash).access_token;
 	}
 
 	// contain the access token.
 	twits.isAuthenticated = function() {
-		//return true;
-		return !!this.getAccessTokenFromUrl();
+		if(this.bLocal)
+			return true;
+		else
+			return !!this.getAccessTokenFromUrl();
 	}
 
 	// Main application
