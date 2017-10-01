@@ -9,7 +9,6 @@
 	var twits = {
 		redirectUri: "https://manoj549t.github.io/note",
 		apiKeyDev: "qek5i8hcngzihxm",
-		access_token: "SVvshC4nXcwAAAAAAAAUXE3acYwSqkZLTUY7kQhg2IbrznWKMyamTTXW_A0_tCeO"
 	};
 
 	twits.parentPath = []; //stack to save the parent directory. It is used for back-tracking (back button).
@@ -37,8 +36,8 @@
 
 	// contain the access token.
 	twits.isAuthenticated = function() {
-		return true;
-		//return !!this.getAccessTokenFromUrl();
+		//return true;
+		return !!this.getAccessTokenFromUrl();
 	}
 
 	// Main application
@@ -48,7 +47,7 @@
 
 		// Initialise Dropbox for full access
 		if (this.isAuthenticated()) {
-			this.dbx = new Dropbox({ accessToken: this.access_token});
+			this.dbx = new Dropbox({ accessToken: this.getAccessTokenFromUrl()});
 		} else {
 			this.dbx = new Dropbox({ clientId: this.apiKeyDev });
 			window.location.replace(this.dbx.getAuthenticationUrl(this.redirectUri));
