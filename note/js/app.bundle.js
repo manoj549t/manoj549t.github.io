@@ -2346,7 +2346,7 @@ module.exports = httpHeaderSafeJson;
 			listParent.append(listItem);
 		}
 
-		if(twits.parentPath.length <= 0 && twits.bModalVisible) {
+		if(twits.parentPath.length <= 0) {
 			if (twits.bModalVisible) {
 				document.getElementById("folderUp").classList.remove("visible");
 				document.getElementById("folderUp").classList.add("invisible");
