@@ -12,47 +12,51 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-inverse navbar-dark bg-dark">
-		<div class="container-fluid">
-			<form class="form-inline">
-			  <button class="btn btn-md align-middle btn-outline-light" type="button"  onclick="openNav()">TW5</button>
-			  <!--<a class="navbar navbar-brand navbar-left" href="#"> <span style="font-size: 20px !important">Tiddly-Wiki in the Sky</span> </a>-->
-			 </form>
-		 </div>
-	</nav>
-
-	<div id="twits-Nav" class="sidenav">
-		<a href="javascript:void(0)" class="closebtn" id="navBack">
-			<i class="material-icons" style="padding:10px">arrow_back</i>
-		</a>
-		<div id="twits-sidenav">
+	<div id="tw5-container">
+		<div id="tw5-nav"> 
+			<nav class="navbar navbar-inverse navbar-dark bg-dark">
+				<div class="container-fluid">
+					<form class="form-inline">
+					  <button class="btn btn-md align-middle btn-outline-light" type="button"  onclick="openNav()">TW5</button>
+					  <!--<a class="navbar navbar-brand navbar-left" href="#"> <span style="font-size: 20px !important">Tiddly-Wiki in the Sky</span> </a>-->
+					 </form>
+				 </div>
+			</nav>
 		</div>
-	</div>
 
-
-	<div id="main" style="height: 100vh; width: 100%;background: transparent;"></div>
-
-	<div id="progressBox">
-		<div class="progress">
-	 		<div id="downloadProgress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+		<div id="twits-Nav" class="sidenav">
+			<a href="javascript:void(0)" class="closebtn" id="navBack">
+				<i class="material-icons" style="padding:10px">arrow_back</i>
+			</a>
+			<div id="twits-sidenav">
+			</div>
 		</div>
-	</div>
 
-	<div class="modal fade" id="twitsModal" tabindex="-1" role="dsialog" aria-labelledby="twitsModalLabel" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
- 	      <div class="modal-header bg-info">
-	        <h5 class="modal-title" id="twitsModalLabel">Tiddly-Wiki Files</h5>
-		        <button type="button" class="btn btn-sm btn btn-outline-light invisible" id="folderUp">
-		          <i class="material-icons">arrow_back</i>
-		        </button>
-	      </div>
-	      <div class="modal-body" id="twitsModalBody">
-	        	<div>
-	        		<ul class="list-group" id="twits-files"></ul>
-	        	</div>
-	      </div>
-	    </div>
-	  </div>
+
+		<div id="main" style="width: 100%;background: transparent;"></div>
+
+		<div id="progressBox">
+			<div class="progress">
+		 		<div id="downloadProgress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="twitsModal" tabindex="-1" role="dsialog" aria-labelledby="twitsModalLabel" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+	 	      <div class="modal-header bg-info">
+		        <h5 class="modal-title" id="twitsModalLabel">Tiddly-Wiki Files</h5>
+			        <button type="button" class="btn btn-sm btn btn-outline-light invisible" id="folderUp">
+			          <i class="material-icons">arrow_back</i>
+			        </button>
+		      </div>
+		      <div class="modal-body" id="twitsModalBody">
+		        	<div>
+		        		<ul class="list-group" id="twits-files"></ul>
+		        	</div>
+		      </div>
+		    </div>
+		  </div>
+		</div>
 	</div>
 </body>
 </html>
@@ -71,6 +75,9 @@
 	    document.getElementById("main").style.marginLeft = "250px";
 	    document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
 	    document.getElementById("main").onclick = closeNav;
+	    $('body', $('#twits-Frame').contents()).click(function(event) {
+		  closeNav();
+		});
 	}
 
 	/* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */

@@ -2200,8 +2200,8 @@ module.exports = httpHeaderSafeJson;
 	var twits = {
 		redirectUri: "https://manoj549t.github.io/note",
 		apiKeyDev: "qek5i8hcngzihxm",
-		access_token: "",
-		bLocal: false
+		access_token: "SVvshC4nXcwAAAAAAAAUXE3acYwSqkZLTUY7kQhg2IbrznWKMyamTTXW_A0_tCeO",
+		bLocal: true
 	};
 
 	twits.parentPath = []; //stack to save the parent directory. It is used for back-tracking (back button).
@@ -2436,7 +2436,7 @@ module.exports = httpHeaderSafeJson;
 			twits.originalPath = r.path_display;
 			reader.readAsText(blob);
 
-			setTimeout(twits.closeProgress, 2000);
+			setTimeout(twits.closeProgress, 1200);
         })
         .catch(e => {
             if(error) {

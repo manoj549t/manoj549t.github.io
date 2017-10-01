@@ -15,8 +15,30 @@
 	border: 8px solid #FBEED5;
 }
 
-body {
-	min-height: 100vh;
+html { height: 100%; }
+body {      
+    padding:0 0;
+    margin:0 0;
+    height: 100%;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+#tw5-container {
+    display:table;
+    height:100%;
+    width:100%;
+}
+
+#tw5-nav {
+    display:table-row;
+}
+
+#main {
+    display:table-row;
+    height:100%;
+    transition: margin-left .5s;
+
 }
 
 /* The side navigation menu */
@@ -43,6 +65,14 @@ body {
     transition: 0.3s
 }
 
+#twits-files {
+    transition: 1.0s
+}
+
+#twits-files a {
+    transition: 1.0s
+}
+
 /* When you mouse over the navigation links, change their color */
 .sidenav a:hover, .offcanvas a:focus{
     color: #f1f1f1;
@@ -55,11 +85,6 @@ body {
     right: 25px;
     font-size: 36px;
     margin-left: 50px;
-}
-
-/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
-#main {
-    transition: margin-left .5s;
 }
 
 .modal-body {

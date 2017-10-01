@@ -245,7 +245,7 @@
 			twits.originalPath = r.path_display;
 			reader.readAsText(blob);
 
-			setTimeout(twits.closeProgress, 2000);
+			setTimeout(twits.closeProgress, 1200);
         })
         .catch(e => {
             if(error) {
