@@ -12,9 +12,6 @@
 </head>
 
 <body>
-
-<!--<div id="twits-greeting"></div>-->	
-
 	<nav class="navbar navbar-inverse navbar-dark bg-dark">
 		<div class="container-fluid">
 			<form class="form-inline">
@@ -35,10 +32,15 @@
 
 	<div id="main" style="height: 100vh; width: 100%;background: transparent;"></div>
 
+	<div id="progressBox">
+		<div class="progress">
+	 		<div id="downloadProgress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+		</div>
+	</div>
+
 	<div class="modal fade" id="twitsModal" tabindex="-1" role="dsialog" aria-labelledby="twitsModalLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header bg-info">
+ 	      <div class="modal-header bg-info">
 	        <h5 class="modal-title" id="twitsModalLabel">Tiddly-Wiki Files</h5>
 		        <button type="button" class="btn btn-sm btn btn-outline-light invisible" id="folderUp">
 		          <i class="material-icons">arrow_back</i>
@@ -52,7 +54,6 @@
 	    </div>
 	  </div>
 	</div>
-
 </body>
 </html>
 
@@ -79,4 +80,5 @@
 	    document.body.style.backgroundColor = "white";
 	    document.getElementById("main").onclick = "";
 	}
+
 </script>

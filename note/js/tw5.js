@@ -178,8 +178,12 @@
 	twits.onClickFolderEntry = function(tag, path, name) {
 
 		if(tag == "folder") {
-			twits.parentPath.push( path.substring(0, path.indexOf("/" + name)));
+			var parentPath = path.substring(0, path.indexOf("/" + name));
+			if(parentPath != twits.parentPath[parentPath.length -1])
+				twits.parentPath.push(parentPath);
+
 			twits.openNewFolder(path, false);
+
 			if (twits.bModalVisible) {
 				document.getElementById("folderUp").classList.remove("invisible");
 				document.getElementById("folderUp").classList.add("visible");
@@ -225,9 +229,9 @@
 	};
 
 	twits.openFile = function(path) {
-		// Read the TiddlyWiki file
-		// We can't trust Dropbox to have detected that the file is UTF8, so we load it in binary and manually decode it
-		//twits.setStatusMessage("Reading HTML file...");
+
+		twits.showProgress();
+		
 		twits.dbx.filesDownload({ path: path})
 		.then(r => {
             var blob = r.fileBlob;
@@ -240,6 +244,8 @@
  
 			twits.originalPath = r.path_display;
 			reader.readAsText(blob);
+
+			setTimeout(twits.closeProgress, 2000);
         })
         .catch(e => {
             if(error) {
@@ -279,20 +285,20 @@
 		status.message.appendChild(document.createTextNode(text));
 	};
 
-	twits.setProgress = function(text) {
+	/*twits.setProgress = function(text) {
 		var status = twits.getStatusPanel();
 		while(status.progress.hasChildNodes()) {
 			status.progress.removeChild(status.progress.firstChild);
 		}
 		status.progress.appendChild(document.createTextNode(text));
-	};
+	};*/
 
 	twits.showError = function(error) {
 		twits.setStatusMessage("Error: " + error);
 		twits.setProgress("");
 	};
 
-	twits.trackProgress = function(xhr,isUpload) {
+	/*twits.trackProgress = function(xhr,isUpload) {
 		var onProgressHandler = function(event) {
 				twits.setProgress(Math.ceil(event.loaded/1024) + "KB");
 			},
@@ -302,13 +308,26 @@
 				twits.setStatusMessage("XHR error");
 			};
 		var src = isUpload ? xhr.upload : xhr;
-		src.addEventListener("progress",onProgressHandler,false);
+		src.addEventListener("progress",	,false);
 		src.addEventListener("load",onLoadHandler,false);
 		src.addEventListener("error",onErrorHandler,false);
+	};*/
+
+	twits.showProgress = function() {
+		$("#downloadProgress").width(0);
+		$("#progressBox").width("70%");
+		$("body").toggleClass("showProgress");
+		//document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+	};
+
+	twits.closeProgress = function() {
+		$("#progressBox").width("0%");
+		$("body").toggleClass("showProgress");
+		//document.body.style.backgroundColor = "white";
 	};
 
 	twits.isTiddlyWiki = function(text) {
-		return true; 
+		return true; 		
 	};
 
 	twits.loadTW5 = function(data){
@@ -356,7 +375,7 @@
 	};
 
 	// Extract the blocks of a TiddlyWiki 2.x.x document and add them to the current document
-	twits.filletTiddlyWiki = function(text) {
+	/*twits.filletTiddlyWiki = function(text) {
 		// Extract a block from a string given start and end markers
 		var extractBlock = function(start,end) {
 			var s = text.indexOf(start);
@@ -448,7 +467,7 @@
 			}
 		}
 		return uni.join("");
-	};
+	};*/
 
 	// Do our stuff when the page has loaded
 	document.addEventListener("DOMContentLoaded",function(event) {
