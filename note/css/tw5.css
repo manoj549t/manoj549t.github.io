@@ -25,6 +25,11 @@ body {
     overflow-x: hidden;
 }
 
+    .display-4 {
+        font-size: 1.3em;
+    }
+
+
     #tw5-container  {
         height:100%;
         width:100%;
@@ -36,6 +41,10 @@ body {
     }
 
 @media screen and (min-width: 480px) {
+    .display-4 {
+        font-size: 3rem;
+    }
+
     #tw5-container  {
         display:table;
     }
@@ -108,9 +117,6 @@ body {
     top: 50%;
     left: 50%;
     background-color: transparent; /* Black*/
-    /*overflow-x: hidden; 
-    overflow-y: hidden;
-    padding-top: 60px; */
     transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
     margin: 0 auto;
     transform: translate(-50%, -50%);
