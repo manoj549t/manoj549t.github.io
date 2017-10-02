@@ -16,6 +16,7 @@
 }
 
 html { height: 100%; }
+
 body {      
     padding:0 0;
     margin:0 0;
@@ -24,22 +25,30 @@ body {
     overflow-x: hidden;
 }
 
-#tw5-container {
-    display:table;
-    height:100%;
-    width:100%;
+    #tw5-container  {
+        height:100%;
+        width:100%;
+    }
+
+    #main {
+        height:100%;
+        transition: margin-left .5s;
+    }
+
+@media screen and (min-width: 480px) {
+    #tw5-container  {
+        display:table;
+    }
+
+    #tw5-nav {
+        display:table-row;
+    }
+
+    #main {
+        display:table-row;
+    }
 }
 
-#tw5-nav {
-    display:table-row;
-}
-
-#main {
-    display:table-row;
-    height:100%;
-    transition: margin-left .5s;
-
-}
 
 /* The side navigation menu */
 .sidenav {
@@ -109,20 +118,13 @@ body {
 }
 
 .showProgress #main {
-      /* Blur and de-color */
+
   -webkit-filter: blur(5px) grayscale(80%);
 
-  /* Recede */
-  /*-webkit-transform: scale(0.9);*/
 }
 
 .showProgress #progressBox {
-      /* Regular size and visible */
-  /* prefix me */
   opacity: 1;
-
-  /* Clickable 
-  pointer-events: auto;*/
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
