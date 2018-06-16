@@ -345,7 +345,8 @@
 		
 		$("#mainContainer").remove();
 
-		$('<iframe id="twits-Frame"/>').appendTo("#main").contents().find('html').append(data);
+		$('<iframe id="twits-Frame"/>').appendTo("#main");
+		$("#twits-Frame").contents().find('html').append(data);
 		$("#twits-Frame").height("100%");
 		$("#twits-Frame").width("100%");
 		
