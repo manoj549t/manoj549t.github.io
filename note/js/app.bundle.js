@@ -2537,10 +2537,10 @@ module.exports = httpHeaderSafeJson;
 		$("#mainContainer").remove();
 		debugger;
 		$('<iframe id="twits-Frame"/>').appendTo("#main");
-		$("#twits-Frame").contents().find('html').append(data);
+		console.log($("#twits-Frame").contents().find('html'));
 		$("#twits-Frame").height("100%");
 		$("#twits-Frame").width("100%");
-		
+		$("#twits-Frame").contents().find('html').append(data);
 		$("#twits-Frame").ready(function(){
  			
  			$("#twits-Frame")[0].contentWindow.$tw.saverHandler.savers.push({
