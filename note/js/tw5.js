@@ -1,6 +1,6 @@
 (function() {
 
-	var Dropbox = require('dropbox');
+	var Dropbox = require('dropbox.js');
 	/**
 	Return isAuthenticated - > this.getAccessTokenFromUrl
 	Updated new Dropbox ({ accessToken: ""})
