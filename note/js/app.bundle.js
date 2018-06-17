@@ -2541,33 +2541,36 @@ module.exports = httpHeaderSafeJson;
 
 		$("#twits-Frame").height("100%");
 		$("#twits-Frame").width("100%");
-		setTimeout(function(){$("#twits-Frame").contents().find('html').append(data);},500);
-
-		$("#twits-Frame").ready(function(){
+		setTimeout(function(){
+		
+			$("#twits-Frame").contents().find('html').append(data);
+	
+			$("#twits-Frame").ready(function(){
  			
- 			$("#twits-Frame")[0].contentWindow.$tw.saverHandler.savers.push({
-				info: {
-					name: "tw5-in-the-sky",
-					priority: 5000,
-					capabilities: ["save"]
-				},
-				save: function( text, method, callback, options ){
-					twits.setStatusMessage("Saving changes...");
-					twits.setProgress("");
-
-					twits.dbx.filesUpload({path: twits.originalPath, mode: "overwrite",contents: text})
-			        .then(function(response) {
-			          twits.clearStatusMessage();
-			          callback();
-			          console.log(response);
-			        })
-			        .catch(function(error) {
-			          console.error(error);
-			        });
-					return true;
-				}
+ 				$("#twits-Frame")[0].contentWindow.$tw.saverHandler.savers.push({
+					info: {
+						name: "tw5-in-the-sky",
+						priority: 5000,
+						capabilities: ["save"]
+					},
+					save: function( text, method, callback, options ){
+						twits.setStatusMessage("Saving changes...");
+						twits.setProgress("");
+	
+						twits.dbx.filesUpload({path: twits.originalPath, mode: "overwrite",contents: text})
+				        .then(function(response) {
+				          twits.clearStatusMessage();
+			        	  callback();
+				          console.log(response);
+				        })
+				        .catch(function(error) {
+				          console.error(error);
+			        	});
+						return true;
+					}
+				});
 			});
-		});
+		},500);
 	};
 
 	// Extract the blocks of a TiddlyWiki 2.x.x document and add them to the current document
