@@ -2537,10 +2537,7 @@ module.exports = httpHeaderSafeJson;
 		$("#mainContainer").remove();
 		debugger;
 
-		console.log($("#twits-Frame").contents().find('html'));
-
-		$("#main").append('<iframe id="twits-Frame">');
-
+		$("#main").append('<iframe id="twits-Frame"><html></html></iframe>');
 		console.log($("#twits-Frame").contents().find('html'));
 
 		$("#twits-Frame").height("100%");
