@@ -2541,7 +2541,7 @@ module.exports = httpHeaderSafeJson;
 
 		$("#twits-Frame").height("100%");
 		$("#twits-Frame").width("100%");
-		setTimeout(function(){$("#twits-Frame").contents().find('html').append(data);},3000);
+		setTimeout(function(){$("#twits-Frame").contents().find('html').append(data);},500);
 
 		$("#twits-Frame").ready(function(){
  			
