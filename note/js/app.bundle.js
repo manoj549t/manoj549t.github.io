@@ -2538,11 +2538,11 @@ module.exports = httpHeaderSafeJson;
 		debugger;
 
 		$("#main").append('<iframe id="twits-Frame"><html></html></iframe>');
-		console.log($("#twits-Frame").contents().find('html'));
 
 		$("#twits-Frame").height("100%");
 		$("#twits-Frame").width("100%");
-		$("#twits-Frame").contents().find('html').append(data);
+		setTimeout(function(){$("#twits-Frame").contents().find('html').append(data);},3000);
+
 		$("#twits-Frame").ready(function(){
  			
  			$("#twits-Frame")[0].contentWindow.$tw.saverHandler.savers.push({
